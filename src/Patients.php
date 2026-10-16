@@ -24,8 +24,9 @@ final class Patients
     /** A doctor's patients whose name matches the search box. */
     public static function search(PDO $db, string $doctor, string $name): array
     {
-        $sql = "SELECT name, diagnosis FROM patients WHERE doctor = '" . $doctor . "' AND name = '" . $name . "'";
-        return $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $db->prepare('SELECT name, diagnosis FROM patients WHERE doctor = :doctor AND name = :name');
+        $stmt->execute([':doctor' => $doctor, ':name' => $name]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function count(PDO $db, string $doctor): int
